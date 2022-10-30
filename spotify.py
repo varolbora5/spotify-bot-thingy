@@ -7,7 +7,7 @@ import six.moves.urllib.parse as urllibparse
 import time
 import random
 
-app = Flask('__name__', static_url_path='', static_folder='static', )
+app = Flask('__name__', static_url_path='', static_folder='static')
 CORS(app)
 
 
@@ -31,10 +31,12 @@ def index():
         ref = request.cookies.get('sptifysdkrefreshtoken124452543')
         payload = {"grant_type": "refresh_token", "refresh_token": ref}
         auth_header = base64.b64encode(
-            six.text_type("<client_id>" + ":" + "<i_think_the_secret_key>").encode("ascii")
+            six.text_type("<client_id>" + ":" +
+                          "<i_think_the_secret_key>").encode("ascii")
         )
         headers = {"Authorization": "Basic %s" % auth_header.decode("ascii")}
-        resp = req.post('https://accounts.spotify.com/api/token', data=payload, headers=headers)
+        resp = req.post('https://accounts.spotify.com/api/token',
+                        data=payload, headers=headers)
         text = resp.json()
         sdktoken = text.get("access_token")
         return render_template("index.html", token=sdktoken)
@@ -47,14 +49,17 @@ def sdkCallback():
         payload = {"grant_type": "authorization_code", "code": code,
                    "redirect_uri": "http://localhost:5000/sdkcallback"}
         auth_header = base64.b64encode(
-            six.text_type("<client_id>" + ":" + "<i_think_the_secret_key>").encode("ascii")
+            six.text_type("<client_id>" + ":" +
+                          "<i_think_the_secret_key>").encode("ascii")
         )
         headers = {"Authorization": "Basic %s" % auth_header.decode("ascii")}
-        resp = req.post("https://accounts.spotify.com/api/token", data=payload, headers=headers, verify=True)
+        resp = req.post("https://accounts.spotify.com/api/token",
+                        data=payload, headers=headers, verify=True)
         text = resp.json()
         refto = text.get("refresh_token")
         res = make_response(redirect('/'))
-        res.set_cookie("sptifysdkrefreshtoken124452543", refto, max_age=60 * 60 * 24 * 365 * 2)
+        res.set_cookie("sptifysdkrefreshtoken124452543",
+                       refto, max_age=60 * 60 * 24 * 365 * 2)
         return res
     else:
         return redirect('/')
@@ -67,14 +72,17 @@ def controllCallback():
         payload = {"grant_type": "authorization_code", "code": code,
                    "redirect_uri": "http://localhost:5000/controlcallback"}
         auth_header = base64.b64encode(
-            six.text_type("<client_id>" + ":" + "<i_think_the_secret_key>").encode("ascii")
+            six.text_type("<client_id>" + ":" +
+                          "<i_think_the_secret_key>").encode("ascii")
         )
         headers = {"Authorization": "Basic %s" % auth_header.decode("ascii")}
-        resp = req.post("https://accounts.spotify.com/api/token", data=payload, headers=headers, verify=True)
+        resp = req.post("https://accounts.spotify.com/api/token",
+                        data=payload, headers=headers, verify=True)
         text = resp.json()
         reftoken = text.get("refresh_token")
         res = make_response(redirect('/'))
-        res.set_cookie("sptifycontrolrefreshtoken124452543", reftoken, max_age=60 * 60 * 24 * 365 * 2)
+        res.set_cookie("sptifycontrolrefreshtoken124452543",
+                       reftoken, max_age=60 * 60 * 24 * 365 * 2)
         return res
     else:
         return redirect('/')
@@ -93,10 +101,12 @@ def refreshControl():
     ref = request.args.get('ref')
     payload = {"grant_type": "refresh_token", "refresh_token": ref}
     auth_header = base64.b64encode(
-            six.text_type("<client_id>" + ":" + "<i_think_the_secret_key>").encode("ascii")
+        six.text_type("<client_id>" + ":" +
+                      "<i_think_the_secret_key>").encode("ascii")
     )
     headers = {"Authorization": "Basic %s" % auth_header.decode("ascii")}
-    resp = req.post('https://accounts.spotify.com/api/token', data=payload, headers=headers)
+    resp = req.post('https://accounts.spotify.com/api/token',
+                    data=payload, headers=headers)
     text = resp.json()
     return text
 
